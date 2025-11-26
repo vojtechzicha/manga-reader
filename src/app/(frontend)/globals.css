@@ -1,0 +1,406 @@
+@import "tailwindcss";
+
+/* Tell Tailwind where to find classes */
+@source "../../**/*.{js,ts,jsx,tsx}";
+@source "../../../components/**/*.{js,ts,jsx,tsx}";
+@source "../../../lib/**/*.{js,ts,jsx,tsx}";
+
+/* Dark mode base styles */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Manga color palette */
+  --manga-black: #1a1a1a;
+  --manga-white: #ffffff;
+  --manga-red: #e63946;
+  --manga-cream: #faf8f5;
+  --manga-gray: #f5f5f5;
+  --manga-border: #1a1a1a;
+  --manga-shadow: #1a1a1a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+
+    /* Manga dark mode adjustments */
+    --manga-black: #ededed;
+    --manga-white: #1a1a1a;
+    --manga-cream: #1f1f1f;
+    --manga-gray: #2a2a2a;
+    --manga-border: #ededed;
+    --manga-shadow: rgba(255, 255, 255, 0.2);
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Container utility */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Image defaults */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Link defaults */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* Scrollbar styling for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* ========================================
+   MANGA STYLE UTILITIES
+   ======================================== */
+
+/* Manga Panel - bold border with offset shadow */
+.manga-panel {
+  border: 3px solid var(--manga-border);
+  box-shadow: 4px 4px 0 var(--manga-shadow);
+  background: var(--manga-white);
+}
+
+.manga-panel-hover {
+  transition: all 0.2s ease;
+}
+
+.manga-panel-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--manga-shadow);
+}
+
+/* Manga Card - lighter variant for chapter cards */
+.manga-card {
+  border: 2px solid transparent;
+  background: var(--manga-white);
+  transition: all 0.2s ease;
+}
+
+.manga-card:hover {
+  border-color: var(--manga-border);
+  box-shadow: 3px 3px 0 var(--manga-shadow);
+  transform: translate(-1px, -1px);
+}
+
+/* Narration Box - classic manga caption style */
+.manga-narration {
+  background: var(--manga-cream);
+  border: 2px solid var(--manga-border);
+  box-shadow: 3px 3px 0 var(--manga-shadow);
+  position: relative;
+}
+
+.manga-narration::first-letter {
+  font-size: 1.75em;
+  font-weight: 700;
+  float: left;
+  line-height: 0.8;
+  margin-right: 0.05em;
+  margin-top: 0.1em;
+  color: var(--manga-red);
+}
+
+/* Sound Effect / Badge styling */
+.manga-sfx {
+  font-weight: 900;
+  font-style: italic;
+  transform: rotate(-3deg) skewX(-3deg);
+  display: inline-block;
+}
+
+.manga-badge {
+  background: var(--manga-red);
+  color: white;
+  font-weight: 800;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  transform: rotate(-2deg) skewX(-2deg);
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Status Badge - manga style */
+.manga-status {
+  background: var(--manga-black);
+  color: var(--manga-white);
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  transform: skewX(-5deg);
+  display: inline-block;
+}
+
+/* Genre Tags - slight rotation for dynamic feel */
+.manga-tag {
+  background: var(--manga-white);
+  border: 2px solid var(--manga-border);
+  padding: 0.25rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+
+.manga-tag:hover {
+  background: var(--manga-black);
+  color: var(--manga-white);
+  transform: rotate(-2deg);
+}
+
+/* Action Button - skewed CTA */
+.manga-button {
+  background: var(--manga-red);
+  color: white;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border: 3px solid #1a1a1a;
+  box-shadow: 4px 4px 0 #1a1a1a;
+  transform: skewX(-5deg);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+}
+
+.manga-button > * {
+  transform: skewX(5deg);
+  display: inline-block;
+}
+
+.manga-button:hover {
+  transform: skewX(-5deg) translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1a1a1a;
+  opacity: 1;
+}
+
+.manga-button:active {
+  transform: skewX(-5deg) translate(0, 0);
+  box-shadow: 2px 2px 0 #1a1a1a;
+}
+
+/* Speed Lines - subtle background pattern */
+.speed-lines {
+  position: relative;
+}
+
+.speed-lines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 8px,
+    rgba(0, 0, 0, 0.02) 8px,
+    rgba(0, 0, 0, 0.02) 9px
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.speed-lines:hover::before {
+  opacity: 1;
+}
+
+/* Panel Cover - for hero images with diagonal clip */
+.manga-cover {
+  clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+}
+
+/* Section Title - chapter title card style */
+.manga-section-title {
+  display: inline-block;
+  background: var(--manga-black);
+  color: var(--manga-white);
+  padding: 0.5rem 1.5rem;
+  font-weight: 800;
+  font-size: 1.25rem;
+  position: relative;
+}
+
+.manga-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 4px;
+  width: 100%;
+  height: 100%;
+  background: var(--manga-red);
+  z-index: -1;
+}
+
+/* Unread indicator bar */
+.manga-unread-bar {
+  position: relative;
+}
+
+.manga-unread-bar::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--manga-red);
+}
+
+/* Horizontal scroll container for manga grids */
+.manga-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--manga-border) transparent;
+}
+
+.manga-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.manga-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.manga-scroll::-webkit-scrollbar-thumb {
+  background: var(--manga-border);
+  border-radius: 3px;
+}
+
+.manga-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--manga-red);
+}
+
+/* ========================================
+   SKELETON LOADING STYLES
+   ======================================== */
+
+/* Skeleton animation - manga style diagonal sweep */
+@keyframes manga-skeleton-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.manga-skeleton {
+  background: linear-gradient(
+    110deg,
+    var(--manga-gray) 30%,
+    #e0e0e0 50%,
+    var(--manga-gray) 70%
+  );
+  background-size: 200% 100%;
+  animation: manga-skeleton-sweep 1.5s ease-in-out infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+  .manga-skeleton {
+    background: linear-gradient(
+      110deg,
+      var(--manga-gray) 30%,
+      #3a3a3a 50%,
+      var(--manga-gray) 70%
+    );
+    background-size: 200% 100%;
+  }
+}
+
+.manga-skeleton-panel {
+  border: 3px solid var(--manga-border);
+  box-shadow: 4px 4px 0 var(--manga-shadow);
+  opacity: 0.6;
+}
+
+.manga-skeleton-card {
+  border: 2px solid var(--manga-border);
+  opacity: 0.5;
+}
+
+/* Loading bar animation */
+@keyframes manga-loading-bar {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.manga-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--manga-gray);
+  overflow: hidden;
+  z-index: 9999;
+}
+
+.manga-loading-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--manga-red);
+  animation: manga-loading-bar 1s ease-in-out infinite;
+}
+
+/* Toast animation */
+@keyframes manga-toast-in {
+  from {
+    transform: translateX(100%) skewX(-5deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) skewX(-5deg);
+    opacity: 1;
+  }
+}
+
+.manga-toast {
+  animation: manga-toast-in 0.3s ease-out forwards;
+}
