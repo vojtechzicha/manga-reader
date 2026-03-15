@@ -41,14 +41,14 @@ export function MangaGrid({
             {heading}
           </HeadingTag>
           <span className="text-xs font-bold uppercase tracking-wide opacity-50">
-            {mangas.length} titles
+            {uniqueMangas.length} titles
           </span>
         </div>
 
         {/* Horizontal scroll container */}
         <div className="manga-scroll -mx-4 px-4">
           <div className="flex gap-3 pb-4">
-            {mangas.map((manga) => (
+            {uniqueMangas.map((manga) => (
               <MangaCard
                 key={keyPrefix ? `${keyPrefix}-${manga._id}` : manga._id.toString()}
                 manga={manga}
