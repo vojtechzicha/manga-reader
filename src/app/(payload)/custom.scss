@@ -254,6 +254,88 @@ h1, h2, h3, h4 {
 }
 
 /* =============================================
+   LOGIN VIEW
+   ============================================= */
+
+.manga-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--theme-elevation-0);
+  font-family: var(--font-body);
+}
+
+.manga-login__card {
+  background: var(--theme-elevation-50);
+  border: 3px solid var(--theme-elevation-border);
+  box-shadow: 6px 6px 0 var(--theme-elevation-950);
+  padding: 3rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.manga-login__badge {
+  display: inline-block;
+  background: #e63946;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.75rem;
+  transform: skewX(-3deg);
+}
+
+.manga-login__title {
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-left: 0.5rem;
+  color: var(--theme-text);
+}
+
+.manga-login__desc {
+  color: var(--theme-elevation-500);
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+}
+
+.manga-login__btn {
+  display: inline-block;
+  background: #e63946;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border: 3px solid var(--theme-elevation-border);
+  box-shadow: 4px 4px 0 var(--theme-elevation-950);
+  transform: skewX(-5deg);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.manga-login__btn:hover {
+  transform: skewX(-5deg) translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--theme-elevation-950);
+  color: #ffffff;
+}
+
+.manga-login__btn:active {
+  transform: skewX(-5deg) translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--theme-elevation-950);
+  color: #ffffff;
+}
+
+.manga-login__btn-text {
+  display: inline-block;
+  transform: skewX(5deg);
+}
+
+/* =============================================
    DARK MODE
    ============================================= */
 
@@ -326,4 +408,20 @@ h1, h2, h3, h4 {
 
 [data-theme="dark"] .dashboard__card-list .card:hover {
   box-shadow: 6px 6px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .manga-login__card {
+  box-shadow: 6px 6px 0 rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .manga-login__btn {
+  box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .manga-login__btn:hover {
+  box-shadow: 6px 6px 0 rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .manga-login__btn:active {
+  box-shadow: 2px 2px 0 rgba(255, 255, 255, 0.2);
 }
