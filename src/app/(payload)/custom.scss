@@ -1,0 +1,329 @@
+/* Manga theme for Payload CMS Admin */
+
+:root {
+  /* Background (low = light surfaces, high = dark text/icons) */
+  --theme-bg: #f5f5f5;
+  --theme-elevation-0: #f5f5f5;
+  --theme-elevation-50: #ffffff;
+  --theme-elevation-100: #faf8f5;
+  --theme-elevation-150: #ffffff;
+  --theme-elevation-200: #f0f0f0;
+  --theme-elevation-250: #e8e8e8;
+  --theme-elevation-300: #d4d4d4;
+  --theme-elevation-350: #b0b0b0;
+  --theme-elevation-400: #8c8c8c;
+  --theme-elevation-450: #737373;
+  --theme-elevation-500: #666666;
+  --theme-elevation-550: #555555;
+  --theme-elevation-600: #4a4a4a;
+  --theme-elevation-650: #404040;
+  --theme-elevation-700: #383838;
+  --theme-elevation-750: #333333;
+  --theme-elevation-800: #2a2a2a;
+  --theme-elevation-850: #222222;
+  --theme-elevation-900: #1e1e1e;
+  --theme-elevation-950: #1a1a1a;
+  --theme-elevation-1000: #1a1a1a;
+
+  /* Text */
+  --theme-text: #1a1a1a;
+
+  /* Borders */
+  --theme-elevation-border: #1a1a1a;
+
+  /* Accent → manga-red */
+  --theme-success-500: #e63946;
+  --theme-success-400: #e63946;
+  --theme-success-600: #c5303c;
+
+  /* Font */
+  --font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* =============================================
+   HEADER / NAV
+   ============================================= */
+
+/* Red accent bar on header */
+.template-default__nav,
+header.app-header {
+  border-bottom: 4px solid #e63946 !important;
+}
+
+/* Nav sidebar */
+nav.nav {
+  border-right: 3px solid #1a1a1a !important;
+}
+
+/* Nav group labels */
+.nav-group__label {
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.75rem !important;
+  color: var(--theme-elevation-650) !important;
+}
+
+/* Nav links */
+.nav-group .nav__link {
+  font-weight: 600 !important;
+  transition: all 0.15s ease !important;
+}
+
+.nav-group .nav__link:hover,
+.nav-group .nav__link.active {
+  background: #e63946 !important;
+  color: #ffffff !important;
+}
+
+/* =============================================
+   DOCUMENT LIST / CARDS
+   ============================================= */
+
+/* Collection list table rows */
+.collection-list .table .row-1:hover {
+  box-shadow: 4px 4px 0 #1a1a1a;
+}
+
+/* List view cells */
+.cell-id,
+.cell-email,
+.cell-title,
+.cell-slug {
+  font-weight: 600 !important;
+}
+
+/* =============================================
+   DOCUMENT HEADER
+   ============================================= */
+
+.doc-header__title h1,
+.document-header__title h1 {
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* =============================================
+   BUTTONS
+   ============================================= */
+
+/* Primary action buttons */
+button.btn.btn--style-primary,
+.btn--style-primary {
+  background: #e63946 !important;
+  border: 2px solid #1a1a1a !important;
+  box-shadow: 3px 3px 0 #1a1a1a !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+  transition: all 0.15s ease !important;
+}
+
+button.btn.btn--style-primary:hover,
+.btn--style-primary:hover {
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 4px 4px 0 #1a1a1a !important;
+}
+
+button.btn.btn--style-primary:active,
+.btn--style-primary:active {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 1px 1px 0 #1a1a1a !important;
+}
+
+/* Secondary buttons */
+button.btn.btn--style-secondary,
+.btn--style-secondary {
+  border: 2px solid #1a1a1a !important;
+  font-weight: 600 !important;
+}
+
+/* =============================================
+   INPUTS / FIELDS
+   ============================================= */
+
+.field-type input,
+.field-type textarea,
+.field-type select,
+.field-type .rs__control {
+  border: 2px solid #1a1a1a !important;
+  border-radius: 0 !important;
+  transition: all 0.15s ease !important;
+}
+
+.field-type input:focus,
+.field-type textarea:focus,
+.field-type select:focus,
+.field-type .rs__control--is-focused {
+  border-color: #e63946 !important;
+  box-shadow: 3px 3px 0 rgba(230, 57, 70, 0.3) !important;
+}
+
+/* Field labels */
+.field-type .field-label,
+.field-type label {
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+  font-size: 0.8rem !important;
+}
+
+/* =============================================
+   CARDS / PANELS
+   ============================================= */
+
+/* Document cards in board view */
+.card {
+  border: 2px solid #1a1a1a !important;
+  box-shadow: 3px 3px 0 #1a1a1a !important;
+  border-radius: 0 !important;
+  transition: all 0.15s ease !important;
+}
+
+.card:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 5px 5px 0 #1a1a1a !important;
+}
+
+/* Render fields group */
+.render-fields .group-field__wrap {
+  border: 2px solid #1a1a1a !important;
+  border-radius: 0 !important;
+}
+
+/* =============================================
+   TABLE STYLING
+   ============================================= */
+
+.table {
+  border: 2px solid #1a1a1a !important;
+}
+
+.table .table-header {
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+  font-size: 0.75rem !important;
+  color: var(--theme-elevation-650) !important;
+}
+
+/* Table header cells - ensure sort buttons are visible */
+.table .sort-column {
+  color: var(--theme-elevation-650) !important;
+}
+
+.table .sort-column__label {
+  color: var(--theme-elevation-650) !important;
+}
+
+/* =============================================
+   TYPOGRAPHY
+   ============================================= */
+
+h1, h2, h3, h4 {
+  font-weight: 800 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Step nav breadcrumbs */
+.step-nav a {
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.03em !important;
+}
+
+/* =============================================
+   DASHBOARD
+   ============================================= */
+
+.dashboard__card-list .card {
+  border: 3px solid #1a1a1a !important;
+  box-shadow: 4px 4px 0 #1a1a1a !important;
+}
+
+.dashboard__card-list .card:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 6px 6px 0 #1a1a1a !important;
+}
+
+.dashboard__label {
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+}
+
+/* =============================================
+   DARK MODE
+   ============================================= */
+
+[data-theme="dark"] {
+  --theme-bg: #0a0a0a;
+  --theme-elevation-0: #0a0a0a;
+  --theme-elevation-50: #141414;
+  --theme-elevation-100: #1f1f1f;
+  --theme-elevation-150: #252525;
+  --theme-elevation-200: #2a2a2a;
+  --theme-elevation-250: #333333;
+  --theme-elevation-300: #3d3d3d;
+  --theme-elevation-350: #474747;
+  --theme-elevation-400: #525252;
+  --theme-elevation-450: #5c5c5c;
+  --theme-elevation-500: #666666;
+  --theme-elevation-550: #777777;
+  --theme-elevation-600: #888888;
+  --theme-elevation-650: #999999;
+  --theme-elevation-700: #aaaaaa;
+  --theme-elevation-750: #bbbbbb;
+  --theme-elevation-800: #cccccc;
+  --theme-elevation-850: #dddddd;
+  --theme-elevation-900: #e0e0e0;
+  --theme-elevation-950: #ededed;
+  --theme-elevation-1000: #ededed;
+
+  --theme-text: #ededed;
+  --theme-elevation-border: #ededed;
+}
+
+[data-theme="dark"] .template-default__nav,
+[data-theme="dark"] header.app-header {
+  border-bottom-color: #e63946 !important;
+}
+
+[data-theme="dark"] nav.nav {
+  border-right-color: #ededed !important;
+}
+
+[data-theme="dark"] .card {
+  border-color: #ededed !important;
+  box-shadow: 3px 3px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .card:hover {
+  box-shadow: 5px 5px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] button.btn.btn--style-primary,
+[data-theme="dark"] .btn--style-primary {
+  border-color: #ededed !important;
+  box-shadow: 3px 3px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .field-type input,
+[data-theme="dark"] .field-type textarea,
+[data-theme="dark"] .field-type select {
+  border-color: #ededed !important;
+}
+
+[data-theme="dark"] .table {
+  border-color: #ededed !important;
+}
+
+[data-theme="dark"] .dashboard__card-list .card {
+  border-color: #ededed !important;
+  box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .dashboard__card-list .card:hover {
+  box-shadow: 6px 6px 0 rgba(255, 255, 255, 0.2) !important;
+}

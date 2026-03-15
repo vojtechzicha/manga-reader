@@ -11,11 +11,19 @@ export default async function LoginPage() {
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <div className="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-          Login to Manga Reader
-        </h1>
+    <div className="min-h-[80vh] flex items-center justify-center px-4">
+      <div className="manga-panel p-10 max-w-md w-full text-center">
+        <div className="mb-6">
+          <span className="inline-block bg-[var(--manga-red)] text-white font-black text-2xl tracking-tighter uppercase px-2 py-1 -skew-x-3">
+            Manga
+          </span>
+          <span className="font-bold text-xl ml-2 text-[var(--manga-black)]">
+            Reader
+          </span>
+        </div>
+        <p className="text-[var(--manga-black)] opacity-60 mb-8 text-sm">
+          Sign in with your Microsoft account to start reading.
+        </p>
         <Suspense>
           <LoginForm />
         </Suspense>

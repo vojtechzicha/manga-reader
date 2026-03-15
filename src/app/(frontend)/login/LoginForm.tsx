@@ -16,15 +16,15 @@ export function LoginForm() {
   const error = searchParams.get('error')
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <div className="border-2 border-[var(--manga-border)] bg-red-50 dark:bg-red-950 text-[var(--manga-red)] px-4 py-3 font-semibold text-sm">
           {ERROR_MESSAGES[error] || 'An error occurred. Please try again.'}
         </div>
       )}
 
-      <a href="/api/auth/login">
-        <Button type="button" className="w-full">
+      <a href="/api/auth/login" className="block">
+        <Button type="button" variant="manga" size="lg" className="w-full text-base uppercase tracking-wider">
           Sign in with Microsoft
         </Button>
       </a>
