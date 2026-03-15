@@ -10,7 +10,8 @@ Built with [Next.js](https://nextjs.org), [Payload CMS](https://payloadcms.com),
 - Chapter tracking (read/unread, "on deck", new updates)
 - Manga rating and chapter reordering
 - Microsoft OAuth login with OneDrive authorization gate
-- Payload CMS admin panel for content management
+- Payload CMS admin panel with Microsoft OAuth integration (admin-only access)
+- Manga-styled admin UI with bold borders, red accents, and offset shadows
 
 ## Prerequisites
 
@@ -59,6 +60,7 @@ Built with [Next.js](https://nextjs.org), [Payload CMS](https://payloadcms.com),
 | `AZURE_REDIRECT_URI` | OAuth callback URL |
 | `ONEDRIVE_BASE_PATH` | OneDrive folder path (default: `/DMS/S3-mangago-bucket`) |
 | `SESSION_SECRET` | Random string for session signing |
+| `ADMIN_EMAILS` | Comma-separated list of emails allowed to access `/admin` |
 
 ## Deployment
 
@@ -66,7 +68,7 @@ The app is configured for deployment on [Fly.io](https://fly.io) with `output: '
 
 ```bash
 fly launch --no-deploy
-fly secrets set DATABASE_URI=... PAYLOAD_SECRET=... AZURE_CLIENT_ID=... AZURE_CLIENT_SECRET=... AZURE_REDIRECT_URI=... SESSION_SECRET=...
+fly secrets set DATABASE_URI=... PAYLOAD_SECRET=... AZURE_CLIENT_ID=... AZURE_CLIENT_SECRET=... AZURE_REDIRECT_URI=... SESSION_SECRET=... ADMIN_EMAILS=...
 fly deploy
 ```
 
