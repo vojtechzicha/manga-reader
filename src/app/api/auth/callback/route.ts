@@ -5,6 +5,7 @@ import { createSession } from '@/lib/auth/session'
 import { getAuthConfig } from '@/lib/auth/config'
 import {
   OAUTH_STATE_COOKIE_NAME,
+  RETURN_TO_COOKIE_NAME,
   SESSION_COOKIE_NAME,
   getExpiredCookieOptions,
   getSessionCookieOptions,
@@ -56,7 +57,12 @@ export async function GET(request: NextRequest) {
 
     const userInfo = tokens.id_token ? decodeIdToken(tokens.id_token) : {}
     const sessionId = await createSession(tokens, userInfo)
-    const response = buildRedirect(`${origin}/`)
+
+    // Check for returnTo cookie to redirect back to the original page
+    const returnTo = request.cookies.get(RETURN_TO_COOKIE_NAME)?.value
+    const redirectPath = returnTo && returnTo.startsWith('/') ? returnTo : '/'
+
+    const response = buildRedirect(`${origin}${redirectPath}`)
     response.cookies.set(
       SESSION_COOKIE_NAME,
       sessionId,
@@ -64,6 +70,12 @@ export async function GET(request: NextRequest) {
     )
     response.cookies.set(
       OAUTH_STATE_COOKIE_NAME,
+      '',
+      getExpiredCookieOptions()
+    )
+    // Clear returnTo cookie
+    response.cookies.set(
+      RETURN_TO_COOKIE_NAME,
       '',
       getExpiredCookieOptions()
     )

@@ -1,12 +1,14 @@
 import crypto from 'crypto'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getAuthorizationUrl } from '@/lib/auth/microsoft'
 import {
   OAUTH_STATE_COOKIE_NAME,
+  RETURN_TO_COOKIE_NAME,
   getOAuthStateCookieOptions,
+  getReturnToCookieOptions,
 } from '@/lib/auth/cookies'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const state = crypto.randomBytes(16).toString('hex')
   const authUrl = getAuthorizationUrl(state)
 
@@ -16,5 +18,16 @@ export async function GET() {
     state,
     getOAuthStateCookieOptions()
   )
+
+  // Store returnTo destination if provided (only allow relative URLs)
+  const returnTo = request.nextUrl.searchParams.get('returnTo')
+  if (returnTo && returnTo.startsWith('/')) {
+    response.cookies.set(
+      RETURN_TO_COOKIE_NAME,
+      returnTo,
+      getReturnToCookieOptions()
+    )
+  }
+
   return response
 }

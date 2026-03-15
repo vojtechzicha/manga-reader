@@ -1,11 +1,13 @@
 import React from 'react'
 import Link from 'next/link'
 import { getOptionalUser } from '@/lib/auth/middleware'
+import { isAdminEmail } from '@/lib/auth/admin'
 import './globals.css'
 
 export const metadata = {
   description: 'Manga Reader - Read your favorite manga',
   title: 'Manga Reader',
+  icons: { icon: '/icon.svg' },
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
@@ -73,12 +75,14 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
                     Login
                   </Link>
                 )}
-                <Link
-                  href="/admin"
-                  className="text-sm font-bold uppercase tracking-wide opacity-70 hover:opacity-100 transition-opacity"
-                >
-                  Admin
-                </Link>
+                {user && isAdminEmail(user.email) && (
+                  <Link
+                    href="/admin"
+                    className="text-sm font-bold uppercase tracking-wide opacity-70 hover:opacity-100 transition-opacity"
+                  >
+                    Admin
+                  </Link>
+                )}
               </div>
             </nav>
           </div>

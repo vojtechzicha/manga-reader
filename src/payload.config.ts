@@ -16,6 +16,17 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     user: Users.slug,
+    meta: {
+      icons: [{ url: '/icon.svg', type: 'image/svg+xml' }],
+      titleSuffix: '— Manga Admin',
+    },
+    components: {
+      views: {
+        login: {
+          Component: './components/admin/PayloadLoginView',
+        },
+      },
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },
