@@ -5,6 +5,7 @@ import {
   SESSION_COOKIE_NAME,
   getExpiredCookieOptions,
 } from '@/lib/auth/cookies'
+import { getAuthConfig } from '@/lib/auth/config'
 import { logAuthEvent } from '@/lib/auth/logger'
 
 async function handleLogout(request: Request) {
@@ -16,7 +17,8 @@ async function handleLogout(request: Request) {
   }
 
   logAuthEvent('logout', { hadSession: Boolean(sessionId) })
-  const response = NextResponse.redirect(new URL('/login', request.url))
+  const { azureRedirectOrigin } = getAuthConfig()
+  const response = NextResponse.redirect(new URL('/login', azureRedirectOrigin))
   response.cookies.set(SESSION_COOKIE_NAME, '', getExpiredCookieOptions())
   return response
 }
