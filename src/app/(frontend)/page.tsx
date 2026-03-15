@@ -51,7 +51,7 @@ export default async function HomePage() {
   const genreEntries = Object.entries(serializedByGenre)
 
   // Get username from email
-  const username = user.email?.split('@')[0] || 'Reader'
+  const username = user.name || user.email?.split('@')[0] || 'Reader'
 
   // Stats for hero
   const totalOnDeck = onDeck.length // Total: recent + continue reading
