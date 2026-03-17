@@ -373,8 +373,9 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
 
   return (
     <div className="space-y-4">
+      <div>
       {/* Action Toolbar */}
-      <div className="flex flex-wrap items-center gap-2 p-4 manga-panel">
+      <div className="sticky top-[56px] z-10 flex flex-wrap items-center gap-2 p-4 manga-panel">
         {/* Bulk Actions - shown when items are selected */}
         {selectedIds.size > 0 ? (
           <>
@@ -413,7 +414,7 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
       </div>
 
       {/* Chapter List */}
-      <div className="manga-panel overflow-hidden">
+      <div className="manga-panel overflow-hidden mt-4">
         {/* Header */}
         <div className="grid grid-cols-[auto_auto_1fr_auto_auto_auto] gap-4 p-3 border-b-2 border-[var(--manga-border)] bg-[var(--manga-gray)] font-bold text-sm">
           <div className="w-6">
@@ -455,6 +456,7 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
             ))}
           </SortableContext>
         </DndContext>
+      </div>
       </div>
 
       {/* Loading Toast */}
