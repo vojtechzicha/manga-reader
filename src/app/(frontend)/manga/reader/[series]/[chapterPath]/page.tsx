@@ -90,7 +90,7 @@ export default async function ReaderPage({ params }: ReaderPageProps) {
               series={series}
               chapterPath={chapterPath}
               direction="next"
-              disabled={!nextChapter}
+              isLastChapter={!nextChapter}
             />
           </div>
         </div>

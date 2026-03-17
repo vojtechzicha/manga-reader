@@ -5,6 +5,7 @@ import { Button } from '@/components/ui'
 import {
   navigateToNextChapter,
   navigateToPreviousChapter,
+  completeLastChapter,
 } from '../../../../actions/manga'
 
 interface NavigationFormProps {
@@ -13,6 +14,7 @@ interface NavigationFormProps {
   chapterPath: string
   direction: 'next' | 'previous'
   disabled?: boolean
+  isLastChapter?: boolean
 }
 
 function Spinner() {
@@ -27,6 +29,7 @@ export function NavigationForm({
   chapterPath,
   direction,
   disabled = false,
+  isLastChapter = false,
 }: NavigationFormProps) {
   const [isPending, startTransition] = useTransition()
 
@@ -35,13 +38,22 @@ export function NavigationForm({
     window.scrollTo(0, 0)
 
     startTransition(async () => {
-      if (direction === 'next') {
+      if (direction === 'next' && isLastChapter) {
+        await completeLastChapter(chapterId, series)
+      } else if (direction === 'next') {
         await navigateToNextChapter(chapterId, series, chapterPath)
       } else {
         await navigateToPreviousChapter(chapterId, series, chapterPath)
       }
     })
   }
+
+  const label =
+    direction === 'next'
+      ? isLastChapter
+        ? 'Finish Manga ★'
+        : 'Next Chapter →'
+      : '← Previous Chapter'
 
   return (
     <>
@@ -58,10 +70,8 @@ export function NavigationForm({
             <Spinner />
             <span>Loading...</span>
           </span>
-        ) : direction === 'next' ? (
-          'Next Chapter →'
         ) : (
-          '← Previous Chapter'
+          label
         )}
       </Button>
     </>

@@ -153,3 +153,12 @@ export async function dedupMangaAction(mangaPath: string) {
   await dedupManga(mangaPath)
   revalidatePath(`/manga/${mangaPath}/edit`)
 }
+
+/**
+ * Complete the last chapter of a manga (mark as read) and redirect to completed screen
+ */
+export async function completeLastChapter(chapterId: string, series: string) {
+  await requireAuth()
+  await markChapter(chapterId, true)
+  redirect(`/manga/reader/${series}/completed`)
+}
