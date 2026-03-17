@@ -8,7 +8,7 @@ import {
   getNextChapter,
   getPreviousChapter,
 } from '@/lib/manga/queries'
-import { ImageViewer } from '@/components/manga'
+import { ImageViewer, ReaderShell } from '@/components/manga'
 import { NavigationForm } from './NavigationForm'
 
 interface ReaderPageProps {
@@ -42,9 +42,10 @@ export default async function ReaderPage({ params }: ReaderPageProps) {
   }
 
   return (
+    <ReaderShell>
     <div className="min-h-screen bg-[var(--manga-gray)]">
       {/* Fixed Header */}
-      <div className="bg-[var(--manga-white)] py-4 sticky top-14 z-40 border-b-4 border-[var(--manga-border)]">
+      <div className="reader-header bg-[var(--manga-white)] py-4 sticky top-14 z-40 border-b-4 border-[var(--manga-border)]">
         <div className="container">
           <h1 className="text-lg md:text-xl font-bold">
             <Link
@@ -67,7 +68,7 @@ export default async function ReaderPage({ params }: ReaderPageProps) {
       </section>
 
       {/* Navigation Footer */}
-      <div className="bg-[var(--manga-white)] py-6 sticky bottom-0 z-40 border-t-4 border-[var(--manga-border)]">
+      <div className="reader-footer bg-[var(--manga-white)] py-6 sticky bottom-0 z-40 border-t-4 border-[var(--manga-border)]">
         <div className="container">
           <div className="flex justify-between items-center">
             <NavigationForm
@@ -96,5 +97,6 @@ export default async function ReaderPage({ params }: ReaderPageProps) {
         </div>
       </div>
     </div>
+    </ReaderShell>
   )
 }

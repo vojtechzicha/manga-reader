@@ -404,3 +404,35 @@ a:hover {
 .manga-toast {
   animation: manga-toast-in 0.3s ease-out forwards;
 }
+
+/* ========================================
+   READER AUTO-HIDE BARS
+   ======================================== */
+
+html[data-reader-mode="true"] > body > header {
+  transition: transform 0.3s ease;
+}
+
+html[data-reader-mode="true"] .reader-header {
+  transition: transform 0.3s ease;
+}
+
+html[data-reader-mode="true"] .reader-footer {
+  transition: transform 0.3s ease;
+}
+
+html[data-bars-hidden="true"] > body > header {
+  transform: translateY(-100%);
+}
+
+html[data-bars-hidden="true"] .reader-header {
+  transform: translateY(calc(-100% - 3.5rem));
+}
+
+html[data-bars-hidden="true"] .reader-footer {
+  transform: translateY(100%);
+}
+
+html[data-bars-hidden="true"][data-at-bottom="true"] .reader-footer {
+  transform: translateY(0);
+}

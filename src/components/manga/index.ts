@@ -7,6 +7,7 @@ export { ImageViewer } from './ImageViewer'
 export { EditChapterList } from './EditChapterList'
 export { SortableChapterRow } from './SortableChapterRow'
 export { MultiDragOverlay } from './DragOverlay'
+export { ReaderShell } from './ReaderShell'
 
 // Skeleton components
 export {
