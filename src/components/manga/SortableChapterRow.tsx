@@ -8,6 +8,7 @@ import type { SerializedChapter } from './EditChapterList'
 interface SortableChapterRowProps {
   chapter: SerializedChapter
   isSelected: boolean
+  isGhostDrag: boolean
   onSelect: (chapterId: string, checked: boolean) => void
   onRowClick: (chapterId: string, event: React.MouseEvent) => void
   onMarkRead: (chapterId: string, asRead: boolean) => void
@@ -18,6 +19,7 @@ interface SortableChapterRowProps {
 export function SortableChapterRow({
   chapter,
   isSelected,
+  isGhostDrag,
   onSelect,
   onRowClick,
   onMarkRead,
@@ -33,12 +35,21 @@ export function SortableChapterRow({
     isDragging,
   } = useSortable({ id: chapter._id })
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 1 : 0,
-  }
+  const style: React.CSSProperties = isGhostDrag
+    ? {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        height: 0,
+        overflow: 'hidden' as const,
+        padding: 0,
+        border: 'none',
+      }
+    : {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0 : 1,
+        zIndex: isDragging ? 1 : 0,
+      }
 
   return (
     <div

@@ -6,6 +6,7 @@ export { StarRating } from './StarRating'
 export { ImageViewer } from './ImageViewer'
 export { EditChapterList } from './EditChapterList'
 export { SortableChapterRow } from './SortableChapterRow'
+export { MultiDragOverlay } from './DragOverlay'
 
 // Skeleton components
 export {

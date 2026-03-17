@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useTransition, useRef } from 'react'
+import { useState, useCallback, useTransition, useRef, useId } from 'react'
 import {
   DndContext,
   closestCenter,
@@ -9,6 +9,8 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
 } from '@dnd-kit/core'
 import {
   arrayMove,
@@ -17,6 +19,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { SortableChapterRow } from './SortableChapterRow'
+import { MultiDragOverlay } from './DragOverlay'
 import { Button } from '@/components/ui/Button'
 import { LoadingToast } from '@/components/ui/LoadingToast'
 import {
@@ -68,6 +71,7 @@ interface EditChapterListProps {
 }
 
 export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditChapterListProps) {
+  const dndId = useId()
   const [chapters, setChapters] = useState(initialChapters)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [isPending, startTransition] = useTransition()
@@ -75,8 +79,13 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
   const lastSelectedIndex = useRef<number | null>(null)
   const lastShiftRange = useRef<[number, number] | null>(null)
 
+  const [activeDragId, setActiveDragId] = useState<string | null>(null)
+  const [draggedIds, setDraggedIds] = useState<Set<string>>(new Set())
+
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -184,32 +193,84 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
     [chapters, selectedIds]
   )
 
+  const handleDragStart = useCallback(
+    (event: DragStartEvent) => {
+      const activeId = event.active.id as string
+      setActiveDragId(activeId)
+
+      if (selectedIds.has(activeId) && selectedIds.size > 1) {
+        setDraggedIds(new Set(selectedIds))
+      } else {
+        setDraggedIds(new Set([activeId]))
+      }
+    },
+    [selectedIds]
+  )
+
+  const handleDragCancel = useCallback(() => {
+    setActiveDragId(null)
+    setDraggedIds(new Set())
+  }, [])
+
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event
 
-      if (over && active.id !== over.id) {
-        const oldIndex = chapters.findIndex((ch) => ch._id === active.id)
-        const newIndex = chapters.findIndex((ch) => ch._id === over.id)
-        const newOrder = arrayMove(chapters, oldIndex, newIndex)
+      setActiveDragId(null)
+      setDraggedIds(new Set())
 
-        // Update local state immediately
-        setChapters(newOrder)
-        setPendingAction('reorder')
+      if (!over || active.id === over.id) return
 
-        // Submit to server
-        startTransition(async () => {
-          await reorderChaptersAction(
-            newOrder.map((ch, idx) => ({
-              id: ch._id,
-              newIndex: idx,
-            }))
-          )
-          setPendingAction(null)
-        })
+      const activeId = active.id as string
+      const overId = over.id as string
+      const isMultiDrag = selectedIds.has(activeId) && selectedIds.size > 1
+
+      let newOrder: SerializedChapter[]
+
+      if (isMultiDrag) {
+        const movingIds = new Set(selectedIds)
+        // Extract moving items preserving relative order
+        const movingItems = chapters.filter((ch) => movingIds.has(ch._id))
+        const remaining = chapters.filter((ch) => !movingIds.has(ch._id))
+
+        // If dropped on a sibling in the moving set, bail
+        if (movingIds.has(overId)) return
+
+        const overIndex = remaining.findIndex((ch) => ch._id === overId)
+        if (overIndex === -1) return
+
+        // Determine insertion: if dragging down insert after, if up insert before
+        const oldActiveIndex = chapters.findIndex((ch) => ch._id === activeId)
+        const oldOverIndex = chapters.findIndex((ch) => ch._id === overId)
+        const insertIndex = oldActiveIndex < oldOverIndex ? overIndex + 1 : overIndex
+
+        remaining.splice(insertIndex, 0, ...movingItems)
+        newOrder = remaining
+
+        // Clear selection after multi-drag
+        setSelectedIds(new Set())
+      } else {
+        const oldIndex = chapters.findIndex((ch) => ch._id === activeId)
+        const newIndex = chapters.findIndex((ch) => ch._id === overId)
+        newOrder = arrayMove(chapters, oldIndex, newIndex)
       }
+
+      // Update local state immediately
+      setChapters(newOrder)
+      setPendingAction('reorder')
+
+      // Submit to server
+      startTransition(async () => {
+        await reorderChaptersAction(
+          newOrder.map((ch, idx) => ({
+            id: ch._id,
+            newIndex: idx,
+          }))
+        )
+        setPendingAction(null)
+      })
     },
-    [chapters]
+    [chapters, selectedIds]
   )
 
   const handleMarkRead = useCallback(
@@ -434,9 +495,12 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
 
         {/* Sortable List */}
         <DndContext
+          id={dndId}
           sensors={sensors}
           collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          onDragCancel={handleDragCancel}
         >
           <SortableContext
             items={chapters.map((ch) => ch._id)}
@@ -447,6 +511,7 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
                 key={chapter._id}
                 chapter={chapter}
                 isSelected={selectedIds.has(chapter._id)}
+                isGhostDrag={activeDragId !== null && draggedIds.has(chapter._id) && chapter._id !== activeDragId}
                 onSelect={handleSelectOne}
                 onRowClick={handleRowClick}
                 onMarkRead={handleMarkRead}
@@ -455,6 +520,14 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
               />
             ))}
           </SortableContext>
+          <DragOverlay dropAnimation={null}>
+            {activeDragId ? (
+              <MultiDragOverlay
+                chapterName={chapters.find((ch) => ch._id === activeDragId)?.name ?? ''}
+                count={draggedIds.size}
+              />
+            ) : null}
+          </DragOverlay>
         </DndContext>
       </div>
       </div>
