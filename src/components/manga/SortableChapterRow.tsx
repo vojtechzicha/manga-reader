@@ -9,6 +9,7 @@ interface SortableChapterRowProps {
   chapter: SerializedChapter
   isSelected: boolean
   onSelect: (chapterId: string, checked: boolean) => void
+  onRowClick: (chapterId: string, event: React.MouseEvent) => void
   onMarkRead: (chapterId: string, asRead: boolean) => void
   onHide: (chapterId: string) => void
   disabled: boolean
@@ -18,6 +19,7 @@ export function SortableChapterRow({
   chapter,
   isSelected,
   onSelect,
+  onRowClick,
   onMarkRead,
   onHide,
   disabled,
@@ -42,6 +44,21 @@ export function SortableChapterRow({
     <div
       ref={setNodeRef}
       style={style}
+      onMouseDown={(e) => {
+        if (e.shiftKey) {
+          const target = e.target as HTMLElement
+          if (!target.closest('button, a, input, [data-drag-handle]')) {
+            e.preventDefault()
+          }
+        }
+      }}
+      onClick={(e) => {
+        if (!(e.metaKey || e.ctrlKey || e.shiftKey)) return
+        const target = e.target as HTMLElement
+        if (target.closest('button, a, input, [data-drag-handle]')) return
+        e.preventDefault()
+        onRowClick(chapter._id, e)
+      }}
       className={`
         grid grid-cols-[auto_auto_1fr_auto_auto_auto] gap-4 p-3 items-center
         border-b border-[var(--manga-border)] border-opacity-20
@@ -64,6 +81,7 @@ export function SortableChapterRow({
       <div
         {...attributes}
         {...listeners}
+        data-drag-handle
         className="w-6 cursor-grab active:cursor-grabbing text-center opacity-50 hover:opacity-100"
       >
         <svg

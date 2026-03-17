@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useTransition } from 'react'
+import { useState, useCallback, useTransition, useRef } from 'react'
 import {
   DndContext,
   closestCenter,
@@ -72,6 +72,8 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [isPending, startTransition] = useTransition()
   const [pendingAction, setPendingAction] = useState<ActionType | null>(null)
+  const lastSelectedIndex = useRef<number | null>(null)
+  const lastShiftRange = useRef<[number, number] | null>(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -90,6 +92,11 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
   }, [chapters, selectedIds.size])
 
   const handleSelectOne = useCallback((chapterId: string, checked: boolean) => {
+    if (checked) {
+      const idx = chapters.findIndex((ch) => ch._id === chapterId)
+      if (idx !== -1) lastSelectedIndex.current = idx
+    }
+    lastShiftRange.current = null
     setSelectedIds((prev) => {
       const next = new Set(prev)
       if (checked) {
@@ -99,7 +106,83 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
       }
       return next
     })
-  }, [])
+  }, [chapters])
+
+  const handleRowClick = useCallback(
+    (chapterId: string, event: React.MouseEvent) => {
+      const clickedIndex = chapters.findIndex((ch) => ch._id === chapterId)
+      if (clickedIndex === -1) return
+
+      if (event.shiftKey) {
+        // Clear browser text selection caused by shift+click
+        window.getSelection()?.removeAllRanges()
+
+        if (lastSelectedIndex.current !== null) {
+          // Remove previous shift-range before applying new one
+          if (lastShiftRange.current) {
+            const [prevStart, prevEnd] = lastShiftRange.current
+            setSelectedIds((prev) => {
+              const next = new Set(prev)
+              for (let i = prevStart; i <= prevEnd; i++) {
+                next.delete(chapters[i]._id)
+              }
+              // Re-add the anchor itself
+              if (lastSelectedIndex.current !== null) {
+                next.add(chapters[lastSelectedIndex.current]._id)
+              }
+              // Add the new range
+              const start = Math.min(lastSelectedIndex.current!, clickedIndex)
+              const end = Math.max(lastSelectedIndex.current!, clickedIndex)
+              for (let i = start; i <= end; i++) {
+                next.add(chapters[i]._id)
+              }
+              return next
+            })
+          } else {
+            // No previous shift-range, just select the new range
+            const start = Math.min(lastSelectedIndex.current, clickedIndex)
+            const end = Math.max(lastSelectedIndex.current, clickedIndex)
+            setSelectedIds((prev) => {
+              const next = new Set(prev)
+              for (let i = start; i <= end; i++) {
+                next.add(chapters[i]._id)
+              }
+              return next
+            })
+          }
+          // Track this shift-range for next shift+click
+          const start = Math.min(lastSelectedIndex.current, clickedIndex)
+          const end = Math.max(lastSelectedIndex.current, clickedIndex)
+          lastShiftRange.current = [start, end]
+        } else {
+          // No anchor — just select this row and set anchor
+          setSelectedIds((prev) => {
+            const next = new Set(prev)
+            next.add(chapterId)
+            return next
+          })
+          lastSelectedIndex.current = clickedIndex
+          lastShiftRange.current = null
+        }
+        // Don't update anchor on shift+click — anchor stays fixed
+      } else {
+        // Ctrl/Cmd+Click: toggle single row
+        const isCurrentlySelected = selectedIds.has(chapterId)
+        setSelectedIds((prev) => {
+          const next = new Set(prev)
+          if (isCurrentlySelected) {
+            next.delete(chapterId)
+          } else {
+            next.add(chapterId)
+          }
+          return next
+        })
+        lastSelectedIndex.current = clickedIndex
+        lastShiftRange.current = null
+      }
+    },
+    [chapters, selectedIds]
+  )
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -364,6 +447,7 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
                 chapter={chapter}
                 isSelected={selectedIds.has(chapter._id)}
                 onSelect={handleSelectOne}
+                onRowClick={handleRowClick}
                 onMarkRead={handleMarkRead}
                 onHide={handleHide}
                 disabled={isPending}
