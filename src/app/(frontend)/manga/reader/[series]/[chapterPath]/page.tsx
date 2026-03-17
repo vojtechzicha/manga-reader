@@ -63,7 +63,13 @@ export default async function ReaderPage({ params }: ReaderPageProps) {
       {/* Images */}
       <section className="py-8 bg-[var(--manga-gray)]">
         <div className="container max-w-4xl">
-          <ImageViewer images={images} altText={`${details.meta.name} - ${chapter.name}`} />
+          <ImageViewer
+            images={images}
+            altText={`${details.meta.name} - ${chapter.name}`}
+            initialImageIndex={chapter.readProgress ?? 0}
+            mangaPath={series}
+            chapterPath={chapterPath}
+          />
         </div>
       </section>
 

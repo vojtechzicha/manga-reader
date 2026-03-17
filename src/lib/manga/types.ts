@@ -45,6 +45,7 @@ export interface Chapter {
   hidden: boolean
   seen: boolean
   lastUpdated: Date
+  readProgress?: number | null
 }
 
 // Lighter types for list views

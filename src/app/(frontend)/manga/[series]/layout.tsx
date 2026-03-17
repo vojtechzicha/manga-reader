@@ -20,7 +20,7 @@ export default async function MangaLayout({ children, params }: MangaLayoutProps
   const session = await requireAuth()
 
   const { series } = await params
-  const { details } = await getMangaDetail(series)
+  const { details, chapters } = await getMangaDetail(series)
 
   if (!details) {
     notFound()
@@ -38,6 +38,11 @@ export default async function MangaLayout({ children, params }: MangaLayoutProps
   const serializedRelatedByGenre = serializeMangasByGenre(relatedByGenre)
 
   const genreEntries = Object.entries(serializedRelatedByGenre).slice(0, 3)
+
+  const visibleChapters = chapters.filter((ch) => !ch.hidden)
+  const hasReadChapters = visibleChapters.some((ch) => ch.read)
+  const hasUnreadChapters = visibleChapters.some((ch) => !ch.read)
+  const isContinueReading = hasReadChapters && hasUnreadChapters
 
   return (
     <div className="bg-[var(--manga-gray)]">
@@ -137,7 +142,7 @@ export default async function MangaLayout({ children, params }: MangaLayoutProps
                   className="manga-button text-lg"
                   variant="manga"
                 >
-                  Start Reading
+                  {isContinueReading ? 'Continue Reading' : 'Start Reading'}
                 </LinkWithLoading>
                 <LinkWithLoading
                   href={`/manga/${series}/edit`}

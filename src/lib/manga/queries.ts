@@ -392,6 +392,7 @@ export async function markChapter(
         read: asRead,
         readAt: asRead ? (readDate ?? new Date()) : null,
         seen: true,
+        readProgress: null,
       },
     }
   )
@@ -622,5 +623,19 @@ export async function dedupManga(mangaPath: string): Promise<void> {
   await getMangasCollection().updateOne(
     { 'request.slug': mangaPath },
     { $set: { dedupRequest: true } }
+  )
+}
+
+/**
+ * Update the in-chapter reading progress (image index)
+ */
+export async function updateReadProgress(
+  mangaPath: string,
+  chapterPath: string,
+  imageIndex: number
+): Promise<void> {
+  await getChaptersCollection().updateOne(
+    { mangaPath, chapterPath },
+    { $set: { readProgress: imageIndex } }
   )
 }

@@ -9,13 +9,14 @@ interface ReaderShellProps {
 }
 
 export function ReaderShell({ children }: ReaderShellProps) {
-  const { barsVisible, isAtBottom } = useScrollDirection(10)
+  const { barsVisible, isAtBottom, resetScroll } = useScrollDirection(10)
   const { resetTransition } = useReaderTransition()
 
-  // Reset transition state when the actual page content mounts
+  // Reset transition state and scroll baseline when the actual page content mounts
   useEffect(() => {
     resetTransition()
-  }, [resetTransition])
+    resetScroll()
+  }, [resetTransition, resetScroll])
 
   // Set reader mode on mount, clean up on unmount
   useEffect(() => {

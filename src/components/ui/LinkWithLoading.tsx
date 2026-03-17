@@ -34,32 +34,16 @@ export function LinkWithLoading({
     })
   }
 
-  // For manga variant, wrap content in span for skew correction
-  const content =
-    variant === 'manga' ? (
-      <span className="flex items-center gap-2">
-        {isPending && <Spinner />}
-        {children}
-      </span>
-    ) : (
-      <span className="flex items-center gap-2">
-        {isPending && <Spinner />}
-        {children}
-      </span>
-    )
-
   return (
-    <>
-      {/* Loading bar at top of viewport */}
+    <button
+      onClick={handleClick}
+      disabled={isPending}
+      className={`${className} ${isPending ? 'opacity-70 cursor-wait' : ''}`}
+    >
       {isPending && <div className="manga-loading-bar" />}
-
-      <button
-        onClick={handleClick}
-        disabled={isPending}
-        className={`${className} ${isPending ? 'opacity-70 cursor-wait' : ''}`}
-      >
-        {content}
-      </button>
-    </>
+      <span className="inline-flex items-center justify-center">
+        {isPending ? <Spinner /> : children}
+      </span>
+    </button>
   )
 }

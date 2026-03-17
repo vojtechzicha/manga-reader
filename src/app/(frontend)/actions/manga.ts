@@ -15,6 +15,7 @@ import {
   reorderChapters,
   resyncManga,
   dedupManga,
+  updateReadProgress,
 } from '@/lib/manga/queries'
 
 /**
@@ -153,6 +154,18 @@ export async function dedupMangaAction(mangaPath: string) {
   await requireAuth()
   await dedupManga(mangaPath)
   revalidatePath(`/manga/${mangaPath}/edit`)
+}
+
+/**
+ * Save in-chapter reading progress (which image the user has scrolled to)
+ */
+export async function saveReadProgress(
+  mangaPath: string,
+  chapterPath: string,
+  imageIndex: number
+) {
+  await requireAuth()
+  await updateReadProgress(mangaPath, chapterPath, imageIndex)
 }
 
 /**
