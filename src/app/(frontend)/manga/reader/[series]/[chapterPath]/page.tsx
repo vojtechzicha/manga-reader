@@ -77,6 +77,8 @@ export default async function ReaderPage({ params }: ReaderPageProps) {
               chapterPath={chapterPath}
               direction="previous"
               disabled={!prevChapter}
+              mangaName={details.meta.name}
+              targetChapterName={prevChapter?.name ?? null}
             />
 
             <Link
@@ -92,6 +94,8 @@ export default async function ReaderPage({ params }: ReaderPageProps) {
               chapterPath={chapterPath}
               direction="next"
               isLastChapter={!nextChapter}
+              mangaName={details.meta.name}
+              targetChapterName={nextChapter?.name ?? null}
             />
           </div>
         </div>

@@ -1,6 +1,5 @@
 'use server'
 
-import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { requireAuth } from '@/lib/auth/middleware'
 import {
@@ -19,13 +18,15 @@ import {
 } from '@/lib/manga/queries'
 
 /**
- * Navigate to next chapter and mark current as read
+ * Mark current chapter as read and return the URL for the next chapter.
+ * Returns a URL string for client-side navigation (avoids redirect() which
+ * breaks out of React transitions and triggers loading.tsx).
  */
 export async function navigateToNextChapter(
   chapterId: string,
   series: string,
   chapterPath: string
-) {
+): Promise<string> {
   await requireAuth()
 
   // Mark current chapter as read
@@ -35,20 +36,20 @@ export async function navigateToNextChapter(
   const nextChapter = await getNextChapter(series, chapterPath)
 
   if (nextChapter) {
-    redirect(`/manga/reader/${series}/${nextChapter.chapterPath}`)
+    return `/manga/reader/${series}/${nextChapter.chapterPath}`
   } else {
-    redirect(`/manga/${series}`)
+    return `/manga/${series}`
   }
 }
 
 /**
- * Navigate to previous chapter and mark current as unread
+ * Mark current chapter as unread and return the URL for the previous chapter.
  */
 export async function navigateToPreviousChapter(
   chapterId: string,
   series: string,
   chapterPath: string
-) {
+): Promise<string> {
   await requireAuth()
 
   // Mark current chapter as unread
@@ -58,9 +59,9 @@ export async function navigateToPreviousChapter(
   const prevChapter = await getPreviousChapter(series, chapterPath)
 
   if (prevChapter) {
-    redirect(`/manga/reader/${series}/${prevChapter.chapterPath}`)
+    return `/manga/reader/${series}/${prevChapter.chapterPath}`
   } else {
-    redirect(`/manga/${series}`)
+    return `/manga/${series}`
   }
 }
 
@@ -155,10 +156,10 @@ export async function dedupMangaAction(mangaPath: string) {
 }
 
 /**
- * Complete the last chapter of a manga (mark as read) and redirect to completed screen
+ * Mark the last chapter as read and return the URL for the completed screen.
  */
-export async function completeLastChapter(chapterId: string, series: string) {
+export async function completeLastChapter(chapterId: string, series: string): Promise<string> {
   await requireAuth()
   await markChapter(chapterId, true)
-  redirect(`/manga/reader/${series}/completed`)
+  return `/manga/reader/${series}/completed`
 }

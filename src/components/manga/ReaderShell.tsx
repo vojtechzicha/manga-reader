@@ -2,6 +2,7 @@
 
 import { useEffect, type ReactNode } from 'react'
 import { useScrollDirection } from '@/hooks/useScrollDirection'
+import { useReaderTransition } from '@/contexts/ReaderTransitionContext'
 
 interface ReaderShellProps {
   children: ReactNode
@@ -9,6 +10,12 @@ interface ReaderShellProps {
 
 export function ReaderShell({ children }: ReaderShellProps) {
   const { barsVisible, isAtBottom } = useScrollDirection(10)
+  const { resetTransition } = useReaderTransition()
+
+  // Reset transition state when the actual page content mounts
+  useEffect(() => {
+    resetTransition()
+  }, [resetTransition])
 
   // Set reader mode on mount, clean up on unmount
   useEffect(() => {

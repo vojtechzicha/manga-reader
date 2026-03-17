@@ -17,4 +17,5 @@ export {
   ChapterListSkeleton,
   MangaTableSkeleton,
   MangaDetailSkeleton,
+  ReaderSkeleton,
 } from './skeletons'
