@@ -64,13 +64,7 @@ Built with [Next.js](https://nextjs.org), [Payload CMS](https://payloadcms.com),
 
 ## Deployment
 
-The app is configured for deployment on [Fly.io](https://fly.io) with `output: 'standalone'` in Next.js config. See `fly.toml` for the configuration.
-
-```bash
-fly launch --no-deploy
-fly secrets set DATABASE_URI=... PAYLOAD_SECRET=... AZURE_CLIENT_ID=... AZURE_CLIENT_SECRET=... AZURE_REDIRECT_URI=... SESSION_SECRET=... ADMIN_EMAILS=...
-fly deploy
-```
+The app is deployed on [Vercel](https://vercel.com). Push to `main` to trigger a deployment. Configure environment variables in the Vercel dashboard.
 
 ## License
 
