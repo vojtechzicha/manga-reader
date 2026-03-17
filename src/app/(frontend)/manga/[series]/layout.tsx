@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { requireAuth } from '@/lib/auth/middleware'
 import {
   getMangaDetail,

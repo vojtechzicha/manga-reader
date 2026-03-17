@@ -40,7 +40,8 @@ describe('auth routes', () => {
 
     const { GET } = await import('@/app/api/auth/login/route')
 
-    const response = await GET()
+    const request = new NextRequest('https://manga.zicha.name/api/auth/login')
+    const response = await GET(request)
 
     expect(response.status).toBe(307)
     expect(response.headers.get('location')).toBe(

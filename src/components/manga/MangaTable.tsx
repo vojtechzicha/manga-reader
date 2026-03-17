@@ -68,7 +68,7 @@ export function MangaTable({ mangas, heading }: MangaTableProps) {
 
         {filteredMangas.length === 0 && (
           <div className="manga-panel p-8 text-center opacity-70">
-            No manga found matching "{searchText}"
+            No manga found matching &ldquo;{searchText}&rdquo;
           </div>
         )}
       </div>

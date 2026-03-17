@@ -4,9 +4,7 @@ import type { SessionDoc } from '../auth/session'
 
 // Global variable to preserve client across hot reloads in development
 declare global {
-  // eslint-disable-next-line no-var
   var _mongoClient: MongoClient | undefined
-  // eslint-disable-next-line no-var
   var _mongoDb: Db | undefined
 }
 

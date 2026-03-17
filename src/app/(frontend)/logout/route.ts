@@ -8,7 +8,7 @@ import {
 import { getAuthConfig } from '@/lib/auth/config'
 import { logAuthEvent } from '@/lib/auth/logger'
 
-async function handleLogout(request: Request) {
+async function handleLogout(_request: Request) {
   const cookieStore = await cookies()
   const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value
 

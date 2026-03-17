@@ -23,6 +23,7 @@ export function LoginForm() {
         </div>
       )}
 
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
       <a href="/api/auth/login" className="block">
         <Button type="button" variant="manga" size="lg" className="w-full text-base uppercase tracking-wider">
           Sign in with Microsoft

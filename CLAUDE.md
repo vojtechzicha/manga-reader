@@ -49,9 +49,24 @@ The `mangas` and `chapters` collections are accessed directly via the MongoDB dr
 
 Payload CMS uses a custom auth strategy (`src/collections/Users.ts`) that reads the session cookie and validates against the MongoDB sessions collection, bridging Microsoft OAuth with Payload's user system.
 
+## Quality gates
+
+Before submitting any change, ensure these all pass:
+
+```bash
+pnpm lint             # Must exit 0 (warnings are OK, errors are not)
+pnpm build            # Must compile and type-check successfully
+pnpm test:int         # All integration tests must pass
+```
+
 ## Code style
 
 - TypeScript strict mode, `@typescript-eslint/no-explicit-any` is warn (not error)
 - Unused variables prefixed with `_` are allowed
 - Prettier: single quotes, trailing commas
 - ESLint ignores `.next/` directory
+- Use `<a>` (not `<Link>`) for API route navigation (e.g. `/api/auth/login`) — add `eslint-disable-next-line @next/next/no-html-link-for-pages`
+- `<img>` is used intentionally for dynamic OneDrive images (not `next/image`) — these produce warnings, not errors
+- Use `&ldquo;`/`&rdquo;` for quotes in JSX text content (not literal `"`)
+- Next.js route handlers that accept a `request` parameter must use it or prefix with `_`
+- Test files for route handlers must pass `NextRequest` objects matching the route's expected signature

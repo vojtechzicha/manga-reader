@@ -13,6 +13,7 @@ export default function PayloadLoginView() {
         <p className="manga-login__desc">
           Sign in with your Microsoft account to access the admin dashboard.
         </p>
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a href="/api/auth/login?returnTo=/admin" className="manga-login__btn">
           <span className="manga-login__btn-text">Sign in with Microsoft</span>
         </a>
