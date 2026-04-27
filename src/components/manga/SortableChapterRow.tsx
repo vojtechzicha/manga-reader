@@ -126,7 +126,7 @@ export function SortableChapterRow({
         {chapter.read ? (
           <span className="opacity-50">
             {chapter.readAt
-              ? formatDistanceToNow(new Date(chapter.readAt), { addSuffix: true })
+              ? `read ${formatDistanceToNow(new Date(chapter.readAt), { addSuffix: true })}`
               : 'read'}
           </span>
         ) : (
