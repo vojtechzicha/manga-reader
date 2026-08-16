@@ -30,6 +30,7 @@ export interface Manga {
   lastSync?: Date
   lastSyncWithUpdate?: Date
   dedupRequest?: boolean
+  mangaToBeDeleted?: boolean
 }
 
 export interface Chapter {

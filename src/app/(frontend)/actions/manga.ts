@@ -16,6 +16,7 @@ import {
   resyncManga,
   dedupManga,
   updateReadProgress,
+  deleteManga,
 } from '@/lib/manga/queries'
 
 /**
@@ -154,6 +155,17 @@ export async function dedupMangaAction(mangaPath: string) {
   await requireAuth()
   await dedupManga(mangaPath)
   revalidatePath(`/manga/${mangaPath}/edit`)
+}
+
+/**
+ * Mark a manga for deletion. Flags the manga doc and removes the
+ * payload manga-request so the extractor will delete the source on next run.
+ */
+export async function deleteMangaAction(mangaPath: string) {
+  await requireAuth()
+  await deleteManga(mangaPath)
+  revalidatePath('/')
+  revalidatePath('/all')
 }
 
 /**

@@ -1,8 +1,12 @@
 import { ObjectId } from 'mongodb'
 import { max } from 'date-fns'
+import configPromise from '@payload-config'
+import { getPayload } from 'payload'
 import { getMangasCollection, getChaptersCollection } from '../db/mongodb'
 import { listImagesForChapter } from '../onedrive/client'
 import type { Manga, Chapter, MangaListItem, MangaWithDate, MangasByGenre } from './types'
+
+const NOT_DELETED_FILTER = { mangaToBeDeleted: { $ne: true } }
 
 // Helper function to shuffle array in place
 function shuffleArray<T>(array: T[]): void {
@@ -18,7 +22,7 @@ function shuffleArray<T>(array: T[]): void {
 export async function getAllMangaSeries(): Promise<MangaListItem[]> {
   return await getMangasCollection()
     .find(
-      {},
+      NOT_DELETED_FILTER,
       {
         sort: { 'meta.name': 1 },
         projection: { 'meta.name': 1, 'request.slug': 1, rating: 1 },
@@ -48,7 +52,7 @@ export async function getMangaSeriesByGenre(): Promise<MangasByGenre> {
   // Get manga that haven't been read, with their genres
   const mangaWithGenres = await getMangasCollection()
     .find(
-      { 'request.slug': { $nin: readMangaList } },
+      { 'request.slug': { $nin: readMangaList }, ...NOT_DELETED_FILTER },
       { projection: { 'request.slug': 1, 'meta.name': 1, 'meta.genres': 1 } }
     )
     .toArray()
@@ -111,7 +115,7 @@ export async function getRelatedMangasByGenre(
   for (const genre of genres) {
     const related = await getMangasCollection()
       .find(
-        { 'meta.genres': genre, 'request.slug': { $ne: mangaPath } },
+        { 'meta.genres': genre, 'request.slug': { $ne: mangaPath }, ...NOT_DELETED_FILTER },
         { projection: { 'request.slug': 1, 'meta.name': 1, rating: 1 } }
       )
       .toArray()
@@ -143,7 +147,7 @@ export async function getRelatedMangasByAuthor(
 
   const related = await getMangasCollection()
     .find(
-      { 'meta.author': author, 'request.slug': { $ne: mangaPath } },
+      { 'meta.author': author, 'request.slug': { $ne: mangaPath }, ...NOT_DELETED_FILTER },
       { projection: { 'request.slug': 1, 'meta.name': 1, rating: 1 } }
     )
     .toArray()
@@ -190,7 +194,7 @@ export async function getReadAgainSeries(): Promise<MangaListItem[]> {
 
   const mangasList = await getMangasCollection()
     .find(
-      { 'request.slug': { $in: filteredList.map((i) => i.mangaPath) } },
+      { 'request.slug': { $in: filteredList.map((i) => i.mangaPath) }, ...NOT_DELETED_FILTER },
       {
         sort: { 'meta.name': 1 },
         projection: { 'meta.name': 1, 'request.slug': 1, rating: 1 },
@@ -248,7 +252,7 @@ export async function getMangaSeriesOnDeck(): Promise<MangaWithDate[]> {
 
   const mangasList = await getMangasCollection()
     .find(
-      { 'request.slug': { $in: filteredList.map((i) => i.mangaPath) } },
+      { 'request.slug': { $in: filteredList.map((i) => i.mangaPath) }, ...NOT_DELETED_FILTER },
       {
         sort: { 'meta.name': 1 },
         projection: { 'meta.name': 1, 'request.slug': 1, rating: 1 },
@@ -287,7 +291,7 @@ export async function getLastUpdatedSeries(): Promise<MangaWithDate[]> {
 
   const filteredList = await getMangasCollection()
     .find(
-      { 'request.slug': { $in: mangaList.map((i) => i._id.mangaPath) } },
+      { 'request.slug': { $in: mangaList.map((i) => i._id.mangaPath) }, ...NOT_DELETED_FILTER },
       {
         sort: { 'meta.name': 1 },
         projection: { 'meta.name': 1, 'request.slug': 1, rating: 1 },
@@ -328,7 +332,7 @@ export async function getNewUpdates(): Promise<MangaWithDate[]> {
 
   const filteredList = await getMangasCollection()
     .find(
-      { 'request.slug': { $in: mangaList.map((i) => i._id.mangaPath) } },
+      { 'request.slug': { $in: mangaList.map((i) => i._id.mangaPath) }, ...NOT_DELETED_FILTER },
       {
         sort: { 'meta.name': 1 },
         projection: { 'meta.name': 1, 'request.slug': 1, rating: 1 },
@@ -624,6 +628,24 @@ export async function dedupManga(mangaPath: string): Promise<void> {
     { 'request.slug': mangaPath },
     { $set: { dedupRequest: true } }
   )
+}
+
+/**
+ * Mark manga for deletion: flag the manga document and remove the
+ * corresponding manga-request from Payload. The /api/requests endpoint
+ * surfaces flagged manga so the extractor can delete them on its next run.
+ */
+export async function deleteManga(mangaPath: string): Promise<void> {
+  await getMangasCollection().updateOne(
+    { 'request.slug': mangaPath },
+    { $set: { mangaToBeDeleted: true } }
+  )
+
+  const payload = await getPayload({ config: configPromise })
+  await payload.delete({
+    collection: 'manga-requests',
+    where: { slug: { equals: mangaPath } },
+  })
 }
 
 /**

@@ -9,6 +9,7 @@ import sharp from 'sharp'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { MangaRequests } from './collections/MangaRequests'
+import { getMangasCollection } from './lib/db/mongodb'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -55,8 +56,15 @@ export default buildConfig({
           pagination: false,
         })
 
-        const exportData = result.docs.map((doc) => {
-          const item: { slug: string; url: string; meta?: { source: { url: string; name: string } } } = {
+        type ExportItem = {
+          slug: string
+          url: string
+          meta?: { source: { url: string; name: string } }
+          mangaToBeDeleted?: true
+        }
+
+        const exportData: ExportItem[] = result.docs.map((doc) => {
+          const item: ExportItem = {
             slug: doc.slug,
             url: doc.url,
           }
@@ -72,6 +80,20 @@ export default buildConfig({
 
           return item
         })
+
+        const toDelete = await getMangasCollection()
+          .find(
+            { mangaToBeDeleted: true },
+            { projection: { 'request.slug': 1, 'request.url': 1 } }
+          )
+          .toArray()
+
+        for (const manga of toDelete) {
+          const slug = (manga as unknown as { request?: { slug?: string } }).request?.slug
+          const url = (manga as unknown as { request?: { url?: string } }).request?.url
+          if (!slug) continue
+          exportData.push({ slug, url: url ?? '', mangaToBeDeleted: true })
+        }
 
         return Response.json(exportData)
       },

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useTransition, useRef, useId } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   DndContext,
   closestCenter,
@@ -30,6 +31,7 @@ import {
   reorderChaptersAction,
   resyncMangaAction,
   dedupMangaAction,
+  deleteMangaAction,
 } from '@/app/(frontend)/actions/manga'
 
 // Action messages for the loading toast
@@ -46,6 +48,7 @@ const ACTION_MESSAGES = {
   'show-all': 'Restoring chapters...',
   'resync': 'Resyncing manga...',
   'dedup': 'Removing duplicates...',
+  'delete': 'Deleting manga...',
 } as const
 
 type ActionType = keyof typeof ACTION_MESSAGES
@@ -72,10 +75,12 @@ interface EditChapterListProps {
 
 export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditChapterListProps) {
   const dndId = useId()
+  const router = useRouter()
   const [chapters, setChapters] = useState(initialChapters)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [isPending, startTransition] = useTransition()
   const [pendingAction, setPendingAction] = useState<ActionType | null>(null)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const lastSelectedIndex = useRef<number | null>(null)
   const lastShiftRange = useRef<[number, number] | null>(null)
 
@@ -355,6 +360,16 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
     })
   }, [mangaSlug])
 
+  const handleDeleteConfirm = useCallback(() => {
+    setShowDeleteConfirm(false)
+    setPendingAction('delete')
+    startTransition(async () => {
+      await deleteMangaAction(mangaSlug)
+      router.push('/')
+      router.refresh()
+    })
+  }, [mangaSlug, router])
+
   // Bulk operations
   const handleBulkMarkRead = useCallback(() => {
     if (selectedIds.size === 0) return
@@ -472,6 +487,15 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
         <Button variant="ghost" size="sm" onClick={handleResync} disabled={isPending}>
           Resync
         </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowDeleteConfirm(true)}
+          disabled={isPending}
+          className="text-[var(--manga-red)] hover:bg-[var(--manga-red)] hover:text-white"
+        >
+          Delete
+        </Button>
       </div>
 
       {/* Chapter List */}
@@ -531,6 +555,51 @@ export function EditChapterList({ chapters: initialChapters, mangaSlug }: EditCh
         </DndContext>
       </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          onClick={() => setShowDeleteConfirm(false)}
+        >
+          <div
+            className="manga-panel max-w-md w-full p-6 bg-[var(--manga-white)] shadow-[6px_6px_0_var(--manga-shadow)]"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-confirm-title"
+          >
+            <h3
+              id="delete-confirm-title"
+              className="text-xl font-black uppercase tracking-wide text-[var(--manga-red)] mb-3"
+            >
+              Delete Manga?
+            </h3>
+            <p className="text-sm mb-6 leading-relaxed">
+              This will mark <span className="font-bold">{mangaSlug}</span> for
+              deletion. The manga will be removed from your library on the next
+              extractor run, and the request will be deleted from the admin
+              panel immediately. This cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <Button
+                variant="ghost"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="manga"
+                onClick={handleDeleteConfirm}
+                disabled={isPending}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Loading Toast */}
       <LoadingToast
